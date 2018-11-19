@@ -14,7 +14,7 @@ This folder contains input datasets.
 This folder contains the underlying data cleaning tools.
 
 ### results
-This folder contains outputted results.
+This folder contains the outputted results.
 
 ### dataset.py
 This file contains the implementation of the dataset class.
