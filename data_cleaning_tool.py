@@ -99,7 +99,8 @@ class DataCleaningTool:
                         pass
                     outputted_cells[(int(i) - 1, int(j))] = v
                 os.remove(tool_results_path)
-            os.remove("crowdclient-runtime.log")
+            if os.path.exists("crowdclient-runtime.log"):
+                os.remove("crowdclient-runtime.log")
             os.remove(dataset_path)
         elif self.name == "nadeef":
             # ---------- Prepare Dataset and Clean Plan ----------
