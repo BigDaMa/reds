@@ -41,7 +41,7 @@ class DataCleaningTool:
         """
         outputted_cells = {}
         if self.name == "dboost":
-            dataset_path = "{}|{}.csv".format(d.name, "".join(
+            dataset_path = "{}-{}.csv".format(d.name, "".join(
                 random.choice(string.ascii_lowercase + string.digits) for _ in range(10)))
             d.write_csv_dataset(dataset_path, d.dataframe)
             self.configuration[0] = "--" + self.configuration[0]
@@ -49,7 +49,7 @@ class DataCleaningTool:
                        ",", "--statistical", "0.5"] + self.configuration + [dataset_path]
             p = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             process_output, process_errors = p.communicate()
-            tool_results_path = "dboost_output|" + dataset_path
+            tool_results_path = "dboost_output-" + dataset_path
             if os.path.exists(tool_results_path):
                 ocdf = pandas.read_csv(tool_results_path, sep=",", header=None, encoding="utf-8", dtype=str,
                                        keep_default_na=False, low_memory=False).apply(lambda x: x.str.strip())
@@ -69,7 +69,7 @@ class DataCleaningTool:
                         if len(re.findall(pattern, value, re.UNICODE)) == 0:
                             outputted_cells[(i, j)] = ""
         elif self.name == "katara":
-            dataset_path = "{}|{}.csv".format(d.name, "".join(
+            dataset_path = "{}-{}.csv".format(d.name, "".join(
                 random.choice(string.ascii_lowercase + string.digits) for _ in range(10)))
             d.write_csv_dataset(dataset_path, d.dataframe)
             command = ["java", "-classpath",
@@ -88,7 +88,7 @@ class DataCleaningTool:
             knowledge_base_path = os.path.abspath(self.configuration[0])
             p = subprocess.Popen(command, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
             p.communicate(dataset_path + "\n" + knowledge_base_path + "\n")
-            tool_results_path = "katara_output|" + dataset_path
+            tool_results_path = "katara_output-" + dataset_path
             if os.path.exists(tool_results_path):
                 ocdf = pandas.read_csv(tool_results_path, sep=",", header=None, encoding="utf-8", dtype=str,
                                        keep_default_na=False, low_memory=False).apply(lambda x: x.str.strip())
@@ -118,7 +118,7 @@ class DataCleaningTool:
                 },
                 "rule": actual_nadeef_parameters
             }
-            nadeef_clean_plan_path = dataset_path + "|nadeef_clean_plan.json"
+            nadeef_clean_plan_path = dataset_path + "-nadeef_clean_plan.json"
             nadeef_clean_plan_file = open(nadeef_clean_plan_path, "w")
             json.dump(nadeef_clean_plan, nadeef_clean_plan_file)
             nadeef_clean_plan_file.close()
@@ -190,7 +190,7 @@ if __name__ == "__main__":
 
     dataset_dictionary = {
         "name": "toy",
-        "path": "datasets/dirty.csv",
+        "path": "datasets/dirty.csv"
     }
     d = dataset.Dataset(dataset_dictionary)
 

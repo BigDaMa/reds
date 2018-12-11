@@ -32,7 +32,7 @@ public class SimplifiedKATARAEntrance {
 		//}
 		//kb+="abstraction-layer/tools/KATARA/mykb";//abstraction-layer/tools/
 
-		String output_errors_file = "katara_output|" + rdb;//rdb+
+		String output_errors_file = "katara_output-" + rdb;//rdb+
 
 
 		String domainSpecificKB = scanner.next();
