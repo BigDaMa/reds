@@ -26,3 +26,17 @@ This file contains the implementation of the data cleaning tool class.
 
 ### reds.py
 This file contains the implementation of the main application.
+
+
+## Reference
+You can find more information about this project and the authors [here](https://www.bigdama.tu-berlin.de/menue/team/mohammad_mahdavi/).
+
+You can also use the following bib entry to cite this project/paper.
+```
+@inproceedings{reds2019mahdavi,
+  title={REDS: Estimating the performance of error detection strategies based on dirtiness profiles},
+  author={Mahdavi, Mohammad and Abedjan, Ziawasch},
+  booktitle={SSDBM},
+  year={2019}
+}
+```
