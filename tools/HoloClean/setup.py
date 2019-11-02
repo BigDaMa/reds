@@ -26,7 +26,7 @@ setup(
         'futures==3.2.0',
         'psycopg2==2.7.4',
         'py4j==0.10.6',
-        'pyspark==2.3.0',
+        'pyspark==2.3.2',
         'torch==0.3.1',
         'torchvision==0.2.0',
         'tqdm==4.20.0',
