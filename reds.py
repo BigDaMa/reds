@@ -255,18 +255,20 @@ class REDS:
             for dataset_name in self.DATASETS:
                 print "Extracting feature vector for dataset {}...".format(dataset_name)
                 feature_vector = []
-                # --------------------Extracting Dataset Profiling Features--------------------
-                if "DP" in self.SELECTED_FEATURE_GROUPS:
-                    for f, v in dp[dataset_name].items():
-                        if f not in ["dataset_top_keywords"]:
-                            feature_vector.append(v)
+                # --------------------Extracting Content Features--------------------
+                if "C" in self.SELECTED_FEATURE_GROUPS:
                     for keyword in keywords_dictionary.keys():
                         a = 0.0
                         if keyword in dp[dataset_name]["dataset_top_keywords"]:
                             a = dp[dataset_name]["dataset_top_keywords"][keyword]
                         feature_vector.append(a)
-                # --------------------Extracting Strategy Profiling Features--------------------
-                if "SP" in self.SELECTED_FEATURE_GROUPS:
+                # --------------------Extracting Structure Features--------------------
+                if "S" in self.SELECTED_FEATURE_GROUPS:
+                    for f, v in dp[dataset_name].items():
+                        if f not in ["dataset_top_keywords"]:
+                            feature_vector.append(v)
+                # --------------------Extracting Dirtiness Features--------------------
+                if "D" in self.SELECTED_FEATURE_GROUPS:
                     d = dataset.Dataset(self.DATASETS[dataset_name])
                     for tool_name in self.ERROR_DETECTION_STRATEGIES:
                         ndc = float(len(sp[dataset_name]["{}|output".format(tool_name)]))
@@ -281,22 +283,21 @@ class REDS:
                                 de = len(list(a | b))
                                 v = 0.0 if de == 0 else no / de
                                 feature_vector.append(v)
-                # --------------------Extracting Evaluation Profiling Features--------------------
-                if "EP" in self.SELECTED_FEATURE_GROUPS:
-                    d = dataset.Dataset(self.DATASETS[dataset_name])
-                    actual_errors = d.get_actual_errors_dictionary()
-                    selected_rows_dictionary = {r: 1 for r in random.sample(range(0, d.dataframe.shape[0]),
-                                                                            int(self.SAMPLING_RATE * d.dataframe.shape[0]))}
-                    for tool_name in self.ERROR_DETECTION_STRATEGIES:
-                        tp = 0.0
-                        total = 0.0
-                        for cell in sp[d.name]["{}|output".format(tool_name)]:
-                            if cell[0] in selected_rows_dictionary:
-                                total += 1.0
-                                if cell in actual_errors:
-                                    tp += 1.0
-                        precision = 0.0 if total == 0 else tp / total
-                        feature_vector.append(precision)
+                    if self.SAMPLING_RATE > 0.0:
+                        d = dataset.Dataset(self.DATASETS[dataset_name])
+                        actual_errors = d.get_actual_errors_dictionary()
+                        selected_rows_dictionary = {r: 1 for r in random.sample(range(0, d.dataframe.shape[0]),
+                                                                                int(self.SAMPLING_RATE * d.dataframe.shape[0]))}
+                        for tool_name in self.ERROR_DETECTION_STRATEGIES:
+                            tp = 0.0
+                            total = 0.0
+                            for cell in sp[d.name]["{}|output".format(tool_name)]:
+                                if cell[0] in selected_rows_dictionary:
+                                    total += 1.0
+                                    if cell in actual_errors:
+                                        tp += 1.0
+                            precision = 0.0 if total == 0 else tp / total
+                            feature_vector.append(precision)
                 x.append(feature_vector)
                 # --------------------Extracting Target Vector--------------------
                 target_vector = []
@@ -594,7 +595,7 @@ if __name__ == "__main__":
     application.PRECISION_AT_K = 3
     application.KEYWORDS_COUNT_PER_COLUMN = 10
     application.SAMPLING_RATE = 0.01  # [0.0, 0.01, 0.02, 0.03, 0.04, 0.05]
-    application.SELECTED_FEATURE_GROUPS = ["DP", "SP", "EP"]  # ["DP", "SP", "EP"]
+    application.SELECTED_FEATURE_GROUPS = ["C", "S", "D"]  # ["C", "S", "D"]
     application.REGRESSION_MODEL = "GBR"  # ["LR", "KNR", "RR", "BRR", "DTR", "SVR", "GBR"]
     application.DIRTINESS_PROFILES_COUNT = len(application.DATASETS)  # [2,..., len(application.DATASETS)]
     # ----------------------------------------
